@@ -3,7 +3,8 @@ const modals = () => {
         const trigger = document.querySelectorAll(triggerSelector),     // ALL так как несколько триггеров будет (псевдомассив)
             modal = document.querySelector(modalSelector),
             close = document.querySelector(closeSelector),
-            windows = document.querySelectorAll('[data-modal]');        // Получаем все модальные окна по дата-атрибутам
+            windows = document.querySelectorAll('[data-modal]'),        // Получаем все модальные окна по дата-атрибутам
+            scroll = calcScroll();
 
         trigger.forEach(item => {                           // этот метод только к массиву можно
             item.addEventListener('click', (e) => {         // и на каждый триггер - обработчик событий
@@ -17,6 +18,7 @@ const modals = () => {
 
                 modal.style.display = "block";              // Показываем модальное окно
                 document.body.style.overflow = "hidden";    // отключаем прокрутку экрана под модальным окном
+                document.body.style.marginRight = `${scroll}px`;    // убираем дёрганье экрана из-за удаления скролла
             });
         });
 
@@ -26,6 +28,7 @@ const modals = () => {
             });
             modal.style.display = "none";
             document.body.style.overflow = "";
+            document.body.style.marginRight = `0px`;    //убираем отступ, который добавляли вместо скролла
         });
 
         modal.addEventListener('click', (e) => {
@@ -35,6 +38,7 @@ const modals = () => {
                 });
                 modal.style.display = "none";
                 document.body.style.overflow = "";
+                document.body.style.marginRight = `0px`;    //убираем отступ, который добавляли вместо скролла
             }
         });
     }
@@ -44,6 +48,21 @@ const modals = () => {
             document.querySelector(selector).style.display = 'block';
             document.body.style.overflow = "hidden";
         }, time);
+    }
+
+    function calcScroll() {
+        let div = document.createElement('div');
+
+        div.style.width = '50px';
+        div.style.height = '50px';
+        div.style.overflowY = 'scroll';
+        div.style.visibility = 'hidden';
+
+        document.body.appendChild(div);
+        let scrollWidth = div.offsetWidth - div.clientWidth;
+        div.remove();
+
+        return scrollWidth;
     }
 
     bindModal('.popup_engineer_btn', '.popup_engineer', '.popup_engineer .popup_close');
